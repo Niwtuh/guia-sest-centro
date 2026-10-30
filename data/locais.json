@@ -1,0 +1,155 @@
+{
+  "unidade": {
+    "nome": "SEST SENAT Fortaleza — Unidade Centro",
+    "endereco": "Av. dos Expedicionários, 1340 — Centro, Fortaleza/CE",
+    "andares": 2,
+    "atualizadoEm": "2026-10-31"
+  },
+  "categorias": [
+    { "id": "sala", "rotulo": "Salas de Aula", "cor": "#4F46E5", "icone": "livro" },
+    { "id": "saude", "rotulo": "Saúde (Consultórios)", "cor": "#0891B2", "icone": "saude" },
+    { "id": "administrativo", "rotulo": "Administrativo", "cor": "#475569", "icone": "predio" }
+  ],
+  "locais": [
+    {
+      "id": "sala-01",
+      "nome": "Sala 01 — Teórica",
+      "categoria": "sala",
+      "andar": 1,
+      "capacidade": 40,
+      "uso": "Aulas teóricas regulares dos cursos técnicos",
+      "horarios": "Seg a Sex, 08h–12h / 14h–18h",
+      "observacao": "Possui projetor e quadro branco"
+    },
+    {
+      "id": "sala-02",
+      "nome": "Sala 02 — Teórica",
+      "categoria": "sala",
+      "andar": 1,
+      "capacidade": 35,
+      "uso": "Aulas teóricas e palestras",
+      "horarios": "Seg a Sex, 08h–12h / 14h–18h",
+      "observacao": "Carteira com apoio para escrever"
+    },
+    {
+      "id": "sala-03",
+      "nome": "Sala 03 — Teórica",
+      "categoria": "sala",
+      "andar": 2,
+      "capacidade": 30,
+      "uso": "Aulas teóricas e mentorias",
+      "horarios": "Seg a Sex, 19h–22h (noturno)",
+      "observacao": "Ar-condicionado"
+    },
+    {
+      "id": "lab-info-01",
+      "nome": "Laboratório de Informática 01",
+      "categoria": "sala",
+      "andar": 2,
+      "capacidade": 25,
+      "uso": "Aulas práticas de informática e simulados",
+      "horarios": "Seg a Sex, 08h–22h",
+      "observacao": "25 computadores com internet"
+    },
+    {
+      "id": "lab-info-02",
+      "nome": "Laboratório de Informática 02",
+      "categoria": "sala",
+      "andar": 2,
+      "capacidade": 20,
+      "uso": "Aulas práticas e atendimento livre",
+      "horarios": "Seg a Sex, 14h–22h",
+      "observacao": "Impressora disponível mediante solicitação"
+    },
+    {
+      "id": "consultorio-odontologia",
+      "nome": "Consultório de Odontologia",
+      "categoria": "saude",
+      "tipo": "Odontologia",
+      "andar": 1,
+      "capacidade": "1 cadeira por atendimento",
+      "especialidades": ["Clínica geral", "Profilaxia", "Restauração", "Extração"],
+      "horarios": "Terça e Quinta, 13h–17h",
+      "recomendacoes": "Agendar previamente na recepção. Trazer carteirinha do SEST.",
+      "cor": "#14B8A6"
+    },
+    {
+      "id": "consultorio-psicologia",
+      "nome": "Consultório de Psicologia",
+      "categoria": "saude",
+      "tipo": "Psicologia",
+      "andar": 1,
+      "capacidade": "Atendimento individual",
+      "especialidades": ["Acolhimento emocional", "Orientação vocacional", "Saúde mental"],
+      "horarios": "Segunda, Quarta e Sexta, 14h–18h",
+      "recomendacoes": "Atendimento sigiloso. Não é necessário apresentar motivo ao agendar.",
+      "cor": "#A855F7"
+    },
+    {
+      "id": "consultorio-fisioterapia",
+      "nome": "Consultório de Fisioterapia",
+      "categoria": "saude",
+      "tipo": "Fisioterapia",
+      "andar": 1,
+      "capacidade": "2 macas",
+      "especialidades": ["Avaliação postural", "Reabilitação", "Eletroterapia"],
+      "horarios": "Quarta e Sexta, 08h–12h",
+      "recomendacoes": "Trazer shorts e camiseta para a avaliação.",
+      "cor": "#059669"
+    },
+    {
+      "id": "consultorio-nutricao",
+      "nome": "Consultório de Nutrição",
+      "categoria": "saude",
+      "tipo": "Nutrição",
+      "andar": 2,
+      "capacidade": "Atendimento individual",
+      "especialidades": ["Avaliação nutricional", "Plano alimentar", "Orientação para motoristas"],
+      "horarios": "Terça, 14h–18h",
+      "recomendacoes": "Trazer registro alimentar de 3 dias (anotar o que comeu).",
+      "cor": "#F59E0B"
+    },
+    {
+      "id": "sala-pilates",
+      "nome": "Sala de Pilates",
+      "categoria": "saude",
+      "tipo": "Pilates",
+      "andar": 2,
+      "capacidade": "10 alunos por turma",
+      "especialidades": ["Pilates de solo", "Alongamento", "Fortalecimento postural"],
+      "horarios": "Turma A: Seg/Qua 07h–08h | Turma B: Ter/Qui 18h–19h",
+      "recomendacoes": "Vestiário masculino e feminino no corredor ao lado.",
+      "cor": "#F43F5E"
+    },
+    {
+      "id": "recepcao-geral",
+      "nome": "Recepção Geral",
+      "categoria": "administrativo",
+      "andar": 1,
+      "capacidade": "Atendimento ao público",
+      "uso": "Triagem, agendamentos e informações",
+      "horarios": "Seg a Sex, 07h–22h | Sáb, 08h–12h",
+      "observacao": "Primeiro ponto de chegada à unidade"
+    },
+    {
+      "id": "secretaria-academica",
+      "nome": "Secretaria Acadêmica",
+      "categoria": "administrativo",
+      "andar": 1,
+      "capacidade": "Atendimento individual",
+      "uso": "Matrículas, históricos, declarações e segunda via de documentos",
+      "horarios": "Seg a Sex, 08h–12h / 14h–18h",
+      "observacao": "Solicitar senha na recepção antes de ser atendido"
+    },
+    {
+      "id": "coordenacao-pedagogica",
+      "nome": "Coordenação Pedagógica",
+      "categoria": "administrativo",
+      "andar": 2,
+      "capacidade": "Atendimento individual",
+      "uso": "Conversas sobre desempenho, plano de estudos e mediação de conflitos",
+      "horarios": "Seg a Sex, 13h–19h",
+      "observacao": "Atendimento preferencialmente agendado"
+    }
+  ]
+}
