@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1D4ED8" />
+  <meta name="description" content="Guia Acadêmico do SEST SENAT Fortaleza (Centro) — offline-first, com mapa da unidade, calculadora de faltas/notas e ouvidoria anônima." />
+  <!-- Manifesto PWA -->
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./assets/icon-192.png" />
+  <title>Guia Acadêmico SEST SENAT Centro</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sest: {
+              azul: "#1D4ED8",
+              ciano: "#0891B2",
+              fundo: "#F8FAFC"
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <!-- Fonte do sistema: carrega instantaneamente, funciona offline -->
+  <style>
+    html { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Plus Jakarta Sans", Inter, sans-serif; }
+    body { background-color: #F8FAFC; color: #1E293B; }
+    /* Área de toque mínima de 44x44px (acessibilidade móvel) */
+    button, a, input, select, textarea { min-height: 44px; }
+    /* Animação da gaveta inferior (bottom sheet) */
+    .bottom-sheet { transition: transform 0.3s ease-out; }
+  </style>
+</head>
+<body class="min-h-screen pb-20">
+  <!-- ════════════════════════════════════════════════════════════════════
+  HEADER FIXO (topo)
+  ════════════════════════════════════════════════════════════════════ -->
+  <header class="bg-blue-700 text-white px-4 py-3 shadow-md sticky top-0 z-10">
+    <h1 class="text-lg font-bold">Guia Acadêmico SEST SENAT</h1>
+    <p class="text-xs text-blue-100">Unidade Centro · Fortaleza</p>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+  PÁGINA 1: INÍCIO / HORÁRIOS
+  ════════════════════════════════════════════════════════════════════ -->
+  <section data-pagina="inicio" class="p-4 space-y-4">
+    <!-- Resumo do dia -->
+    <div id="resumo-inicio" class="bg-white rounded-xl shadow-sm p-4"></div>
+
+    <!-- Formulário: cadastrar nova matéria -->
+    <div class="bg-white rounded-xl shadow-sm p-4">
+      <h2 class="text-base font-bold text-slate-800 mb-3">Cadastrar matéria</h2>
+      <form onsubmit="adicionarComponente(event)" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block col-span-2">
+            <span class="text-xs font-semibold text-slate-600">Nome do componente</span>
+            <input type="text" name="nome" required
+              class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+              placeholder="Ex.: Português Instrumental" />
+          </label>
+          <label class="block">
+            <span class="text-xs font-semibold text-slate-600">Professor(a)</span>
+            <input type="text" name="professor"
+              class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+              placeholder="Ex.: Maria Silva" />
+          </label>
+          <label class="block">
+            <span class="text-xs font-semibold text-slate-600">Sala</span>
+            <input type="text" name="sala"
+              class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+              placeholder="Ex.: Sala 03" />
+          </label>
+          <label class="block col-span-2">
+            <span class="text-xs font-semibold text-slate-600">Total de aulas no semestre</span>
+            <input type="number" name="totalAulas" min="1" required
+              class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+              placeholder="Ex.: 40" />
+          </label>
+        </div>
+        <button type="submit" class="w-full bg-blue-700 text-white font-semibold py-3 rounded-lg hover:bg-blue-800">
+          Adicionar matéria
+        </button>
+      </form>
+    </div>
+
+    <!-- Lista de matérias cadastradas (renderizada por app.js) -->
+    <div>
+      <h2 class="text-base font-bold text-slate-800 mb-2">Minhas matérias</h2>
+      <div id="lista-componentes" class="space-y-3"></div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+  PÁGINA 2: MAPA CENTRO
+  ════════════════════════════════════════════════════════════════════ -->
+  <section data-pagina="mapa" class="p-4 space-y-4 hidden">
+    <h2 class="text-xl font-bold text-slate-800">Mapa da Unidade Centro</h2>
+    <p class="text-sm text-slate-600">Toque em qualquer sala para ver detalhes. Use os filtros ou a busca.</p>
+
+    <!-- Busca rápida -->
+    <input id="mapa-busca" type="search"
+      placeholder="Buscar: dente, pilates, sala 03, recepção..."
+      class="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-sm shadow-sm" />
+
+    <!-- Filtros por categoria -->
+    <div id="mapa-filtros" class="flex gap-2 overflow-x-auto pb-1"></div>
+
+    <!-- Blocos do mapa (renderizados por mapa.js) -->
+    <div id="mapa-blocos" class="mt-4"></div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+  PÁGINA 3: MEU DESEMPENHO
+  ════════════════════════════════════════════════════════════════════ -->
+  <section data-pagina="desempenho" class="p-4 space-y-4 hidden">
+    <h2 class="text-xl font-bold text-slate-800">Meu Desempenho</h2>
+    <p class="text-sm text-slate-600">Insira suas notas (N1, N2, N3). A média e o Indicador de Eficiência são calculados automaticamente.</p>
+
+    <!-- Indicador de Eficiência Geral -->
+    <div id="ieg-card"></div>
+
+    <!-- Lista de componentes para nota -->
+    <div id="lista-desempenho" class="space-y-3"></div>
+
+    <!-- Card de gatilho de feedback (a cada 2 concluídos) -->
+    <div id="card-feedback-gatilho" class="hidden bg-cyan-50 border border-cyan-200 rounded-xl p-4">
+      <h3 class="text-sm font-bold text-cyan-800">Você concluiu 2 matérias — avalie o módulo</h3>
+      <p class="text-xs text-cyan-700 mt-1 mb-3">Avaliação anônima, leva menos de 1 minuto.</p>
+      <form onsubmit="enviarFeedback(event)" class="space-y-3">
+        <div class="grid grid-cols-3 gap-2">
+          <label class="block">
+            <span class="text-xs text-slate-600">Didática</span>
+            <select name="didatica" class="w-full mt-1 px-2 py-2 border rounded-lg text-sm">
+              <option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-xs text-slate-600">Pontualidade</span>
+            <select name="pontualidade" class="w-full mt-1 px-2 py-2 border rounded-lg text-sm">
+              <option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="text-xs text-slate-600">Clareza</span>
+            <select name="clareza" class="w-full mt-1 px-2 py-2 border rounded-lg text-sm">
+              <option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option>
+            </select>
+          </label>
+        </div>
+        <label class="block">
+          <span class="text-xs text-slate-600">Sugestões</span>
+          <textarea name="sugestao" rows="3"
+            class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+            placeholder="O que melhoraria neste módulo?"></textarea>
+        </label>
+        <button type="submit" class="w-full bg-cyan-600 text-white font-semibold py-3 rounded-lg">Enviar feedback</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+  PÁGINA 4: OUVIDORIA
+  ════════════════════════════════════════════════════════════════════ -->
+  <section data-pagina="ouvidoria" class="p-4 space-y-4 hidden">
+    <h2 class="text-xl font-bold text-slate-800">Ouvidoria</h2>
+
+    <!-- Banner de garantia de anonimato -->
+    <div class="bg-emerald-50 border-2 border-emerald-500 rounded-xl p-4 text-center">
+      <p class="text-base font-bold text-emerald-800">100% Anônimo</p>
+      <p class="text-xs text-emerald-700 mt-1">Nenhum dado seu ou do seu aparelho é registrado: sem nome, sem matrícula, sem e-mail, sem login, sem IP e sem geolocalização.</p>
+    </div>
+
+    <!-- Formulário de denúncia -->
+    <form onsubmit="enviarDenuncia(event)" class="bg-white rounded-xl shadow-sm p-4 space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <label class="block">
+          <span class="text-xs font-semibold text-slate-600">Tipo de ocorrência</span>
+          <select name="tipo" required class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm">
+            <option value="">Selecione...</option>
+            <option>Assédio</option>
+            <option>Descumprimento de Normas</option>
+            <option>Estrutura Física / Consultórios</option>
+            <option>Outros</option>
+          </select>
+        </label>
+        <label class="block">
+          <span class="text-xs font-semibold text-slate-600">Turno aproximado</span>
+          <select name="turno" required class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm">
+            <option value="">Selecione...</option>
+            <option>Manhã</option>
+            <option>Tarde</option>
+            <option>Noite</option>
+          </select>
+        </label>
+      </div>
+
+      <label class="block">
+        <span class="text-xs font-semibold text-slate-600">Data aproximada (opcional)</span>
+        <input type="date" name="dataAproximada"
+          class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+      </label>
+
+      <label class="block">
+        <span class="text-xs font-semibold text-slate-600">Relato detalhado</span>
+        <textarea name="relato" required rows="6"
+          class="w-full mt-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+          placeholder="Descreva os fatos com o máximo de detalhes possível..."></textarea>
+      </label>
+
+      <p class="text-xs text-slate-500 bg-slate-50 p-3 rounded-lg">
+        Antes de enviar, lembre-se: seu relato será tratado com absoluto sigilo. Nenhuma informação que possa identificar você é coletada.
+      </p>
+
+      <button type="submit" class="w-full bg-blue-700 text-white font-semibold py-3 rounded-lg hover:bg-blue-800">
+        Registrar denúncia
+      </button>
+    </form>
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+  BOTTOM NAVIGATION BAR (fixa, 4 abas)
+  ════════════════════════════════════════════════════════════════════ -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex z-20"
+    style="padding-bottom: env(safe-area-inset-bottom);">
+    <button data-aba="inicio" class="flex-1 flex flex-col items-center justify-center py-2 text-blue-700">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12L12 3l9 9"/><path d="M5 10v10h14V10"/></svg>
+      <span class="text-[10px] font-semibold mt-1">Início</span>
+    </button>
+    <button data-aba="mapa" class="flex-1 flex flex-col items-center justify-center py-2 text-slate-500">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+      <span class="text-[10px] font-semibold mt-1">Mapa</span>
+    </button>
+    <button data-aba="desempenho" class="flex-1 flex flex-col items-center justify-center py-2 text-slate-500">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l3-3 3 3 5-5"/></svg>
+      <span class="text-[10px] font-semibold mt-1">Desempenho</span>
+    </button>
+    <button data-aba="ouvidoria" class="flex-1 flex flex-col items-center justify-center py-2 text-slate-500">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7v4l-2 4h18l-2-4V9a7 7 0 0 0-7-7z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      <span class="text-[10px] font-semibold mt-1">Ouvidoria</span>
+    </button>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════════════════════════
+  BOTTOM SHEET (gaveta inferior do mapa)
+  ════════════════════════════════════════════════════════════════════ -->
+  <div id="bottom-sheet"
+    class="bottom-sheet fixed bottom-0 left-0 right-0 bg-white shadow-2xl rounded-t-2xl translate-y-full z-30 max-h-[85vh] overflow-y-auto">
+  </div>
+
+  <!-- Scripts: ordem de carregamento -->
+  <script src="./storage.js"></script>
+  <script src="./js/storage.js"></script>
+  <script src="./js/calculadora.js"></script>
+  <script src="./js/mapa.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+  </html>
