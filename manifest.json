@@ -1,0 +1,28 @@
+{
+  "name": "Guia Acadêmico SEST SENAT Centro",
+  "short_name": "Guia SEST",
+  "description": "Aplicativo offline-first do aluno do SEST SENAT Fortaleza (Centro): horários, mapa da unidade, calculadora de faltas/notas e canal de ouvidoria anônima.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8FAFC",
+  "theme_color": "#1D4ED8",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["education", "productivity", "health"],
+  "icons": [
+    {
+      "src": "./assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
